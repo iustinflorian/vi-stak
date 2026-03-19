@@ -9,6 +9,8 @@ import com.gifprojects.vistak.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
@@ -31,17 +33,25 @@ public class TaskService {
                 .taskPriority(data.getTaskPriority())
                 .user(newUser)
                 .build();
-
         taskRepository.save(newTask);
     }
 
-    public Task fetchTask(Long taskId){
-        return taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("not found"));
+    public List<Task> fetchAllTasks(Long userId){
+        return taskRepository.getAllByUserId(userId);
     }
 
-    public Task updateTask(TaskUpdateDTO data, Long taskId){
-        Task currTask = fetchTask(taskId);
+    public Task fetchTask(Long taskId, Long userId){
+        Task newTask = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("not found"));
+
+        if (!newTask.getUser().getId().equals(userId)){
+            throw new RuntimeException("unauthorized");
+        }
+        return newTask;
+    }
+
+    public Task updateTask(TaskUpdateDTO data, Long taskId, Long userId){
+        Task currTask = fetchTask(taskId, userId);
 
         if(data.getTitle() != null && !data.getTitle().isBlank()){
             currTask.setTitle(data.getTitle());
@@ -55,14 +65,11 @@ public class TaskService {
         if(data.getTaskPriority() != null){
             currTask.setTaskPriority(data.getTaskPriority());
         }
-
         return taskRepository.save(currTask);
     }
 
-    public void deleteTask(Long taskId){
-        if (!taskRepository.existsById(taskId)){
-            throw new RuntimeException("not found");
-        }
-        taskRepository.deleteById(taskId);
+    public void deleteTask(Long taskId, Long userId){
+        Task currTask = fetchTask(taskId, userId);
+        taskRepository.delete(currTask);
     }
 }

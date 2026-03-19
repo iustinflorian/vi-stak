@@ -7,6 +7,8 @@ import com.gifprojects.vistak.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -22,6 +24,7 @@ public class UserService {
                         .password(data.getPassword())
                         .email(data.getEmail())
                         .genderType(data.getGenderType())
+                        .taskList(new ArrayList<>())
                         .build();
 
         return userRepository.save(newUser);
