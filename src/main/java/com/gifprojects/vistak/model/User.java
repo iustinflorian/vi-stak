@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -30,6 +31,9 @@ public class User {
     @NotBlank (message = "Alerts and reminders are sent to email. Please provide one!")
     @Email (message = "Email format invalid.")
     private String email;
+
+    @Column (nullable = false)
+    private LocalDateTime createdAt;
 
     @Column
     private GenderType genderType;

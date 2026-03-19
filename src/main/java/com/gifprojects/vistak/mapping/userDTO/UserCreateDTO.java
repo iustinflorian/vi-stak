@@ -1,4 +1,4 @@
-package com.gifprojects.vistak.mapping;
+package com.gifprojects.vistak.mapping.userDTO;
 
 import com.gifprojects.vistak.model.GenderType;
 import lombok.Data;

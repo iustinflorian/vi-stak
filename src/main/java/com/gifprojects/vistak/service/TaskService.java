@@ -1,4 +1,61 @@
 package com.gifprojects.vistak.service;
 
+import com.gifprojects.vistak.mapping.taskDTO.TaskCreateDTO;
+import com.gifprojects.vistak.mapping.taskDTO.TaskUpdateDTO;
+import com.gifprojects.vistak.model.Task;
+import com.gifprojects.vistak.repository.TaskRepository;
+import com.gifprojects.vistak.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
 public class TaskService {
+    private final TaskRepository taskRepository;
+
+    @Autowired
+    public TaskService(TaskRepository taskRepository){
+        this.taskRepository = taskRepository;
+    }
+
+    public void createTask(TaskCreateDTO data){
+        Task newTask = Task.builder()
+                .title(data.getTitle())
+                .desc(data.getDesc())
+                .taskType(data.getTaskType())
+                .taskPriority(data.getTaskPriority())
+                .build();
+
+        taskRepository.save(newTask);
+    }
+
+    public Task fetchTask(Long taskId){
+        return taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("not found"));
+    }
+
+    public Task updateTask(TaskUpdateDTO data, Long taskId){
+        Task currTask = fetchTask(taskId);
+
+        if(data.getTitle() != null && !data.getTitle().isBlank()){
+            currTask.setTitle(data.getTitle());
+        }
+        if(data.getDesc() != null && !data.getDesc().isBlank()){
+            currTask.setDesc(data.getDesc());
+        }
+        if(data.getTaskType() != null){
+            currTask.setTaskType(data.getTaskType());
+        }
+        if(data.getTaskPriority() != null){
+            currTask.setTaskPriority(data.getTaskPriority());
+        }
+
+        return taskRepository.save(currTask);
+    }
+
+    public void deleteTask(Long taskId){
+        if (!taskRepository.existsById(taskId)){
+            throw new RuntimeException("not found");
+        }
+        taskRepository.deleteById(taskId);
+    }
 }
