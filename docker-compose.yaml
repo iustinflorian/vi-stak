@@ -4,12 +4,24 @@ services:
     container_name: vistak-database
     environment:
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: vistak_db
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: vistak-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/vistak_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
 
 volumes:
   pgdata:
