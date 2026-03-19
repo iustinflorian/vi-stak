@@ -3,6 +3,7 @@ package com.gifprojects.vistak.service;
 import com.gifprojects.vistak.mapping.taskDTO.TaskCreateDTO;
 import com.gifprojects.vistak.mapping.taskDTO.TaskUpdateDTO;
 import com.gifprojects.vistak.model.Task;
+import com.gifprojects.vistak.model.User;
 import com.gifprojects.vistak.repository.TaskRepository;
 import com.gifprojects.vistak.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +12,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository){
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository){
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
-    public void createTask(TaskCreateDTO data){
+    public void createTask(TaskCreateDTO data, Long userId){
+        User newUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("not found"));
+
         Task newTask = Task.builder()
                 .title(data.getTitle())
                 .desc(data.getDesc())
                 .taskType(data.getTaskType())
                 .taskPriority(data.getTaskPriority())
+                .user(newUser)
                 .build();
 
         taskRepository.save(newTask);

@@ -7,8 +7,6 @@ import com.gifprojects.vistak.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -18,7 +16,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void createUser(UserCreateDTO data){
+    public User createUser(UserCreateDTO data){
         User newUser = User.builder()
                         .username(data.getUsername())
                         .password(data.getPassword())
@@ -26,7 +24,7 @@ public class UserService {
                         .genderType(data.getGenderType())
                         .build();
 
-        userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
 
     public User fetchUser(Long userId){

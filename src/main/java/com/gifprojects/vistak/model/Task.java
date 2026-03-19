@@ -13,6 +13,7 @@ import lombok.*;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column (name = "task_id", updatable = false, nullable = false)
     private Long id;
 
     @Column (nullable = false)
