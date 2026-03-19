@@ -50,7 +50,7 @@ public class TaskService {
         return newTask;
     }
 
-    public Task updateTask(TaskUpdateDTO data, Long taskId, Long userId){
+    public void updateTask(TaskUpdateDTO data, Long taskId, Long userId){
         Task currTask = fetchTask(taskId, userId);
 
         if(data.getTitle() != null && !data.getTitle().isBlank()){
@@ -65,7 +65,6 @@ public class TaskService {
         if(data.getTaskPriority() != null){
             currTask.setTaskPriority(data.getTaskPriority());
         }
-        return taskRepository.save(currTask);
     }
 
     public void deleteTask(Long taskId, Long userId){

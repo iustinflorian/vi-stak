@@ -5,6 +5,7 @@ import com.gifprojects.vistak.mapping.userDTO.UserUpdateDTO;
 import com.gifprojects.vistak.model.User;
 import com.gifprojects.vistak.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,16 +13,18 @@ import java.util.ArrayList;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User createUser(UserCreateDTO data){
         User newUser = User.builder()
                         .username(data.getUsername())
-                        .password(data.getPassword())
+                        .password(passwordEncoder.encode(data.getPassword()))
                         .email(data.getEmail())
                         .genderType(data.getGenderType())
                         .taskList(new ArrayList<>())
@@ -53,7 +56,7 @@ public class UserService {
         }
 
         if(data.getPassword() != null && !data.getPassword().isBlank()){
-            currUser.setPassword(data.getPassword());
+            currUser.setPassword(passwordEncoder.encode(data.getPassword()));
         }
 
         return userRepository.save(currUser);

@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: vistak-database
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: vistak_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
