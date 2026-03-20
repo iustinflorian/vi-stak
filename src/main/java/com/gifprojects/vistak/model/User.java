@@ -20,7 +20,7 @@ public class User {
     @Column (name = "user_id", updatable = false, nullable = false)
     private Long id;
 
-    @Column (nullable = false)
+    @Column (nullable = false, unique = true)
     @NotBlank (message = "Username is mandatory for logging in.")
     private String username;
 
@@ -28,15 +28,21 @@ public class User {
     @NotBlank (message = "Password is mandatory for logging in.")
     private String password;
 
-    @Column (nullable = false)
+    @Column (nullable = false, unique = true)
     @NotBlank (message = "Alerts and reminders are sent to email. Please provide one!")
     @Email (message = "Email format invalid.")
     private String email;
 
-    @Column (nullable = false)
+    @Column (name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @Enumerated (EnumType.STRING)
+    @Column (name = "gender")
     private GenderType genderType;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
