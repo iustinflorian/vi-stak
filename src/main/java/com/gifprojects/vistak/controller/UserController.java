@@ -3,6 +3,7 @@ package com.gifprojects.vistak.controller;
 import com.gifprojects.vistak.mapping.MapResponse;
 import com.gifprojects.vistak.mapping.userDTO.UserCreateDTO;
 import com.gifprojects.vistak.mapping.userDTO.UserFetchDTO;
+import com.gifprojects.vistak.mapping.userDTO.UserLoginDTO;
 import com.gifprojects.vistak.mapping.userDTO.UserUpdateDTO;
 import com.gifprojects.vistak.model.User;
 import com.gifprojects.vistak.service.UserService;
@@ -26,6 +27,13 @@ public class UserController {
         User newUser = userService.createUser(data);
         UserFetchDTO response = MapResponse.mapUserResponse(newUser);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserFetchDTO> loginUser(@RequestBody UserLoginDTO data){
+        User newUser = userService.loginUser(data);
+        UserFetchDTO response = MapResponse.mapUserResponse(newUser);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/my-profile")

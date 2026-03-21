@@ -7,8 +7,10 @@ import com.gifprojects.vistak.model.User;
 import com.gifprojects.vistak.repository.TaskRepository;
 import com.gifprojects.vistak.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,16 +29,19 @@ public class TaskService {
         User newUser = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("not found"));
 
-
+        validateDeadline(data.getDeadline());
 
         Task newTask = Task.builder()
                 .title(data.getTitle())
                 .desc(data.getDesc())
                 .taskType(data.getTaskType())
                 .taskPriority(data.getTaskPriority())
+                .deadline(data.getDeadline())
                 .user(newUser)
                 .build();
         taskRepository.save(newTask);
+
+        newUser.getTaskList().add(newTask);
     }
 
     public List<Task> fetchAllTasks(Long userId){
@@ -74,4 +79,12 @@ public class TaskService {
         Task currTask = fetchTask(taskId, userId);
         taskRepository.delete(currTask);
     }
+
+    // deadline business logic; soon to be decoupled from TaskService
+    public void validateDeadline(LocalDateTime deadline){
+        if (deadline != null && deadline.isBefore(LocalDateTime.now())){
+            throw new RuntimeException("invalid deadline");
+        }
+    }
+
 }

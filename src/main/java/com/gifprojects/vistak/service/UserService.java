@@ -1,6 +1,7 @@
 package com.gifprojects.vistak.service;
 
 import com.gifprojects.vistak.mapping.userDTO.UserCreateDTO;
+import com.gifprojects.vistak.mapping.userDTO.UserLoginDTO;
 import com.gifprojects.vistak.mapping.userDTO.UserUpdateDTO;
 import com.gifprojects.vistak.model.User;
 import com.gifprojects.vistak.repository.UserRepository;
@@ -31,6 +32,17 @@ public class UserService {
                         .build();
 
         return userRepository.save(newUser);
+    }
+
+    public User loginUser(UserLoginDTO data){
+        User currUser = userRepository.findByUsername(data.getUsername())
+                .orElseThrow(() -> new RuntimeException("not found"));
+
+        if (!passwordEncoder.matches(data.getPassword(), currUser.getPassword())){
+            throw new RuntimeException("unauthorized");
+        }
+
+        return currUser;
     }
 
     public User fetchUser(Long userId){
