@@ -23,6 +23,16 @@ public class UserService {
     }
 
     public User createUser(UserCreateDTO data){
+        if (userRepository.findByUsername(data.getUsername()).isPresent()){
+            throw new RuntimeException("username already used");
+        }
+        if (userRepository.findByEmail(data.getEmail()).isPresent()){
+            throw new RuntimeException("email already used");
+        }
+
+        if (userRepository.getUserByEmail(data.getEmail()) != null){
+        }
+
         User newUser = User.builder()
                         .username(data.getUsername())
                         .password(passwordEncoder.encode(data.getPassword()))
