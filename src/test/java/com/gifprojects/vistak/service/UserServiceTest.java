@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceMockTest {
+public class UserServiceTest {
     @Mock
     private UserRepository userRepositoryMock;
 
